@@ -1,4 +1,4 @@
-package fr.geromeavecung.katabankaccount.businessdomain;
+package fr.geromeavecung.katabankaccount.businessdomain.account;
 
 public class OperationsHistory {
     private final Deposit deposit;

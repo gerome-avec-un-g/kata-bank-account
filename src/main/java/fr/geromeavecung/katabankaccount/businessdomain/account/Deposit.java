@@ -1,4 +1,4 @@
-package fr.geromeavecung.katabankaccount.businessdomain;
+package fr.geromeavecung.katabankaccount.businessdomain.account;
 
 public record Deposit(Amount amount) {
 

@@ -1,11 +1,11 @@
 package fr.geromeavecung.katabankaccount.usecases;
 
-import fr.geromeavecung.katabankaccount.businessdomain.Account;
-import fr.geromeavecung.katabankaccount.businessdomain.Amount;
-import fr.geromeavecung.katabankaccount.businessdomain.CreateAccount;
-import fr.geromeavecung.katabankaccount.businessdomain.Deposit;
-import fr.geromeavecung.katabankaccount.businessdomain.OperationsHistory;
-import fr.geromeavecung.katabankaccount.businessdomain.User;
+import fr.geromeavecung.katabankaccount.businessdomain.account.Account;
+import fr.geromeavecung.katabankaccount.businessdomain.account.Amount;
+import fr.geromeavecung.katabankaccount.businessdomain.account.CreateAccount;
+import fr.geromeavecung.katabankaccount.businessdomain.account.Deposit;
+import fr.geromeavecung.katabankaccount.businessdomain.account.OperationsHistory;
+import fr.geromeavecung.katabankaccount.businessdomain.account.User;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

@@ -1,8 +1,8 @@
 package fr.geromeavecung.katabankaccount.usecases;
 
-import fr.geromeavecung.katabankaccount.businessdomain.Account;
-import fr.geromeavecung.katabankaccount.businessdomain.Accounts;
-import fr.geromeavecung.katabankaccount.businessdomain.User;
+import fr.geromeavecung.katabankaccount.businessdomain.account.Account;
+import fr.geromeavecung.katabankaccount.businessdomain.account.Accounts;
+import fr.geromeavecung.katabankaccount.businessdomain.account.User;
 
 import java.util.HashMap;
 import java.util.Map;

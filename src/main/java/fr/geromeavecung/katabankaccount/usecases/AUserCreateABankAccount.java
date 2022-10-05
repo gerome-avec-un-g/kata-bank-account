@@ -1,7 +1,7 @@
 package fr.geromeavecung.katabankaccount.usecases;
 
-import fr.geromeavecung.katabankaccount.businessdomain.CreateAccount;
-import fr.geromeavecung.katabankaccount.businessdomain.User;
+import fr.geromeavecung.katabankaccount.businessdomain.account.CreateAccount;
+import fr.geromeavecung.katabankaccount.businessdomain.account.User;
 
 public class AUserCreateABankAccount {
     private final CreateAccount createAccount;
