@@ -9,6 +9,9 @@ public class CreateAccount {
     }
 
     public void execute(User user, Amount amount) {
+        if (accounts.forUser(user).isPresent()) {
+            throw new IllegalStateException("a user can't have two accounts");
+        }
         accounts.save(createAccount(user, amount));
     }
 
