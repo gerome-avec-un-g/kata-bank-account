@@ -18,4 +18,8 @@ public class Account {
     public User getOwner() {
         return owner;
     }
+
+    public void deposit(Amount amount) {
+        operationsHistory.add(new Deposit(amount));
+    }
 }

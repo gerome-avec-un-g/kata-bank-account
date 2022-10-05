@@ -29,14 +29,14 @@ public class AUserCreateABankAccountTest {
     }
 
     @Test
-    void given_a_connected_user_when_he_create_an_account_with_a_first_deposit_of_10_euros_then_the_account_is_created_with_a_deposit_operation_of_10_euros() {
+    void given_a_connected_user_when_he_create_an_account_with_a_first_deposit_of_1_euro_then_the_account_is_created_with_a_deposit_operation_of_1_euro() {
         User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
         AccountsInMemory accountsInMemory = new AccountsInMemory();
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
-        Deposit firstDeposit = new Deposit(new Amount(10));
+        Deposit firstDeposit = new Deposit(new Amount(1));
         OperationsHistory operationsHistory = new OperationsHistory(firstDeposit);
         Account expectedAccount = new Account(user, operationsHistory);
-        AccountCreationForm accountCreationForm = new AccountCreationForm(10);
+        AccountCreationForm accountCreationForm = new AccountCreationForm(1);
 
         aUserCreateABankAccount.execute(user, accountCreationForm);
 
@@ -86,6 +86,6 @@ public class AUserCreateABankAccountTest {
     }
 
     // TODO tests about user : no user/empty user/bad uuid/unknown uuid...
-    // TODO tests about amount : maximum number ?
+    // TODO tests about amount : maximum number ? is there a minimum if not 0 (either 0 or 100+ for exemple)
     // TODO other feature ? : a bank admin creates an account for a user
 }
