@@ -6,6 +6,7 @@ import fr.geromeavecung.katabankaccount.businessdomain.account.Deposit;
 import fr.geromeavecung.katabankaccount.businessdomain.account.DepositMoney;
 import fr.geromeavecung.katabankaccount.businessdomain.account.OperationsHistory;
 import fr.geromeavecung.katabankaccount.businessdomain.account.User;
+import fr.geromeavecung.katabankaccount.businessdomain.account.Withdrawal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,11 +49,25 @@ public class AUserMakesADepositTest {
         }
 
         @Test
-        void account_with_1_operation() {
+        void account_with_1_deposit() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(2))));
             accountsInMemory.save(initialAccount);
             Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(2)), new Deposit(new Amount(1))))));
+            DepositRequest depositRequest = new DepositRequest(1);
+
+            aUserMakesADeposit.execute(user, depositRequest);
+
+            assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
+                    .isEqualTo(expectedAccount);
+        }
+
+        @Test
+        void account_with_1_withdrawal() {
+            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            Account initialAccount = new Account(user, new OperationsHistory(new Withdrawal(new Amount(2))));
+            accountsInMemory.save(initialAccount);
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Withdrawal(new Amount(2)), new Deposit(new Amount(1))))));
             DepositRequest depositRequest = new DepositRequest(1);
 
             aUserMakesADeposit.execute(user, depositRequest);
