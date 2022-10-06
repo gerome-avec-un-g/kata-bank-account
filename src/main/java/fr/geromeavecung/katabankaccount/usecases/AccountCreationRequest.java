@@ -2,9 +2,9 @@ package fr.geromeavecung.katabankaccount.usecases;
 
 import fr.geromeavecung.katabankaccount.businessdomain.account.Amount;
 
-public record DepositForm(int depositAmount) {
+public record AccountCreationRequest(int firstDepositAmount) {
 
     public Amount toAmount() {
-        return new Amount(depositAmount);
+        return new Amount(firstDepositAmount);
     }
 }

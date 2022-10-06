@@ -11,7 +11,7 @@ public class AUserMakesADeposit {
         this.depositMoney = depositMoney;
     }
 
-    public void execute(User user, DepositForm depositForm) {
-        depositMoney.execute(user, depositForm.toAmount());
+    public void execute(User user, DepositRequest depositRequest) {
+        depositMoney.execute(user, depositRequest.toAmount());
     }
 }

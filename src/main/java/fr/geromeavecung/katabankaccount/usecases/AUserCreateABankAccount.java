@@ -10,7 +10,7 @@ public class AUserCreateABankAccount {
         this.createAccount = createAccount;
     }
 
-    public void execute(User connectedUser, AccountCreationForm accountCreationForm) {
-        createAccount.execute(connectedUser, accountCreationForm.toAmount());
+    public void execute(User connectedUser, AccountCreationRequest accountCreationRequest) {
+        createAccount.execute(connectedUser, accountCreationRequest.toAmount());
     }
 }

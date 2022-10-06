@@ -22,4 +22,8 @@ public class Account {
     public void deposit(Amount amount) {
         operationsHistory.add(new Deposit(amount));
     }
+
+    public void withdraw(Amount amount) {
+        operationsHistory.add(new Withdrawal(amount));
+    }
 }

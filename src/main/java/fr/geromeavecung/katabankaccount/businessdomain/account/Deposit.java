@@ -1,6 +1,6 @@
 package fr.geromeavecung.katabankaccount.businessdomain.account;
 
-public record Deposit(Amount amount) {
+public record Deposit(Amount amount) implements Operation {
 
     public Deposit(Amount amount) {
         if (amount.value() <= 0) {

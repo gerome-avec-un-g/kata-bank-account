@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OperationsHistory {
-    private final List<Deposit> deposits;
+    private final List<Operation> operations;
 
     public OperationsHistory() {
-        this.deposits = new ArrayList<>();
+        this.operations = new ArrayList<>();
     }
 
-    public OperationsHistory(Deposit deposit) {
-        this.deposits = new ArrayList<>();
-        add(deposit);
+    public OperationsHistory(Operation operation) {
+        this.operations = new ArrayList<>();
+        add(operation);
     }
 
-    public OperationsHistory(List<Deposit> deposits) {
+    public OperationsHistory(List<Operation> operations) {
         // new ArrayList because parameter can be an immutable list
-        this.deposits = new ArrayList<>(deposits);
+        this.operations = new ArrayList<>(operations);
     }
 
-    public void add(Deposit deposit) {
-        deposits.add(deposit);
+    public void add(Operation operation) {
+        operations.add(operation);
     }
 }

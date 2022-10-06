@@ -22,9 +22,9 @@ public class AUserCreateABankAccountTest {
         AccountsInMemory accountsInMemory = new AccountsInMemory();
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
         Optional<Account> expectedAccount = Optional.of(new Account(user));
-        AccountCreationForm accountCreationForm = new AccountCreationForm(0);
+        AccountCreationRequest accountCreationRequest = new AccountCreationRequest(0);
 
-        aUserCreateABankAccount.execute(user, accountCreationForm);
+        aUserCreateABankAccount.execute(user, accountCreationRequest);
 
         assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
                 .isEqualTo(expectedAccount);
@@ -38,9 +38,9 @@ public class AUserCreateABankAccountTest {
         Deposit firstDeposit = new Deposit(new Amount(1));
         OperationsHistory operationsHistory = new OperationsHistory(firstDeposit);
         Optional<Account> expectedAccount = Optional.of(new Account(user, operationsHistory));
-        AccountCreationForm accountCreationForm = new AccountCreationForm(1);
+        AccountCreationRequest accountCreationRequest = new AccountCreationRequest(1);
 
-        aUserCreateABankAccount.execute(user, accountCreationForm);
+        aUserCreateABankAccount.execute(user, accountCreationRequest);
 
         assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
                 .isEqualTo(expectedAccount);
@@ -51,9 +51,9 @@ public class AUserCreateABankAccountTest {
         User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
         AccountsInMemory accountsInMemory = new AccountsInMemory();
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
-        AccountCreationForm accountCreationForm = new AccountCreationForm(-1);
+        AccountCreationRequest accountCreationRequest = new AccountCreationRequest(-1);
 
-        assertThatThrownBy(() -> aUserCreateABankAccount.execute(user, accountCreationForm))
+        assertThatThrownBy(() -> aUserCreateABankAccount.execute(user, accountCreationRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Deposit amount can't be less or equal to 0, was: -1");
         }
@@ -65,9 +65,9 @@ public class AUserCreateABankAccountTest {
         Account connectedUserAccount = new Account(user);
         accountsInMemory.save(connectedUserAccount);
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
-        AccountCreationForm accountCreationForm = new AccountCreationForm(-1);
+        AccountCreationRequest accountCreationRequest = new AccountCreationRequest(-1);
 
-        assertThatThrownBy(() -> aUserCreateABankAccount.execute(user, accountCreationForm))
+        assertThatThrownBy(() -> aUserCreateABankAccount.execute(user, accountCreationRequest))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("a user can't have two accounts");
     }
@@ -81,9 +81,9 @@ public class AUserCreateABankAccountTest {
         accountsInMemory.save(connectedUserAccount);
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
         Optional<Account> expectedAccount = Optional.of(new Account(connectedUser));
-        AccountCreationForm accountCreationForm = new AccountCreationForm(0);
+        AccountCreationRequest accountCreationRequest = new AccountCreationRequest(0);
 
-        aUserCreateABankAccount.execute(connectedUser, accountCreationForm);
+        aUserCreateABankAccount.execute(connectedUser, accountCreationRequest);
 
         assertThat(accountsInMemory.forUser(connectedUser)).usingRecursiveComparison()
                 .isEqualTo(expectedAccount);
