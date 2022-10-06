@@ -14,7 +14,7 @@ import java.util.UUID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-public class AUserCreateABankAccountTest {
+class AUserCreateABankAccountTest {
 
     @Test
     void given_a_connected_user_when_he_create_an_account_without_a_first_deposit_then_the_account_is_created_without_operations() {
@@ -90,6 +90,6 @@ public class AUserCreateABankAccountTest {
     }
 
     // TODO tests about user : no user/empty user/bad uuid/unknown uuid...
-    // TODO tests about amount : maximum number ? is there a minimum if not 0 (either 0 or 100+ for exemple)
+    // TODO tests about amount : maximum number ? is there a minimum if not 0 (either 0 or 100+ for example)
     // TODO other feature ? : a bank admin creates an account for a user
 }
