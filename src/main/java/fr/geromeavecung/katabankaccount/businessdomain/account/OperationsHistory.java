@@ -16,7 +16,8 @@ public class OperationsHistory {
     }
 
     public OperationsHistory(List<Deposit> deposits) {
-        this.deposits = deposits;
+        // new ArrayList because parameter can be an immutable list
+        this.deposits = new ArrayList<>(deposits);
     }
 
     public void add(Deposit deposit) {

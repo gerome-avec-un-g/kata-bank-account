@@ -21,7 +21,7 @@ public class AUserCreateABankAccountTest {
         User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
         AccountsInMemory accountsInMemory = new AccountsInMemory();
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
-        Account expectedAccount = new Account(user);
+        Optional<Account> expectedAccount = Optional.of(new Account(user));
         AccountCreationForm accountCreationForm = new AccountCreationForm(0);
 
         aUserCreateABankAccount.execute(user, accountCreationForm);
@@ -55,7 +55,7 @@ public class AUserCreateABankAccountTest {
 
         assertThatThrownBy(() -> aUserCreateABankAccount.execute(user, accountCreationForm))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Deposit amount can't be less or equal to 0");
+                .hasMessage("Deposit amount can't be less or equal to 0, was: -1");
         }
 
     @Test
@@ -69,7 +69,7 @@ public class AUserCreateABankAccountTest {
 
         assertThatThrownBy(() -> aUserCreateABankAccount.execute(user, accountCreationForm))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("a user can't have two accounts");
+                .hasMessage("a user can't have two accounts");
     }
 
     @Test
