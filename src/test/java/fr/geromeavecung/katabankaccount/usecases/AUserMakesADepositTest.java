@@ -9,6 +9,7 @@ import fr.geromeavecung.katabankaccount.businessdomain.account.User;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,13 +22,14 @@ public class AUserMakesADepositTest {
         AccountsInMemory accountsInMemory = new AccountsInMemory();
         Account initialAccount = new Account(user);
         accountsInMemory.save(initialAccount);
-        Account expectedAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1))));
+        Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(new Deposit(new Amount(1)))));
         DepositForm depositForm = new DepositForm(1);
         AUserMakesADeposit aUserMakesADeposit = new AUserMakesADeposit(new DepositMoney(accountsInMemory));
 
         aUserMakesADeposit.execute(user, depositForm);
 
-        assertThat(accountsInMemory.forUser(user).get()).isEqualToComparingFieldByFieldRecursively(expectedAccount);
+        assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
+                .isEqualTo(expectedAccount);
     }
 
     @Test
@@ -36,13 +38,14 @@ public class AUserMakesADepositTest {
         AccountsInMemory accountsInMemory = new AccountsInMemory();
         Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1))));
         accountsInMemory.save(initialAccount);
-        Account expectedAccount = new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1)), new Deposit(new Amount(2)))));
+        Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1)), new Deposit(new Amount(2))))));
         DepositForm depositForm = new DepositForm(2);
         AUserMakesADeposit aUserMakesADeposit = new AUserMakesADeposit(new DepositMoney(accountsInMemory));
 
         aUserMakesADeposit.execute(user, depositForm);
 
-        assertThat(accountsInMemory.forUser(user).get()).isEqualToComparingFieldByFieldRecursively(expectedAccount);
+        assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
+                .isEqualTo(expectedAccount);
     }
 // TODO  2 existing operations ? does it add something to the behavior ?
     // TODO deposit limits -1 0 1

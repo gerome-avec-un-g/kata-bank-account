@@ -8,6 +8,7 @@ import fr.geromeavecung.katabankaccount.businessdomain.account.OperationsHistory
 import fr.geromeavecung.katabankaccount.businessdomain.account.User;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -25,7 +26,8 @@ public class AUserCreateABankAccountTest {
 
         aUserCreateABankAccount.execute(user, accountCreationForm);
 
-        assertThat(accountsInMemory.forUser(user).get()).isEqualToComparingFieldByFieldRecursively(expectedAccount);
+        assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
+                .isEqualTo(expectedAccount);
     }
 
     @Test
@@ -35,12 +37,13 @@ public class AUserCreateABankAccountTest {
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
         Deposit firstDeposit = new Deposit(new Amount(1));
         OperationsHistory operationsHistory = new OperationsHistory(firstDeposit);
-        Account expectedAccount = new Account(user, operationsHistory);
+        Optional<Account> expectedAccount = Optional.of(new Account(user, operationsHistory));
         AccountCreationForm accountCreationForm = new AccountCreationForm(1);
 
         aUserCreateABankAccount.execute(user, accountCreationForm);
 
-        assertThat(accountsInMemory.forUser(user).get()).isEqualToComparingFieldByFieldRecursively(expectedAccount);
+        assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
+                .isEqualTo(expectedAccount);
     }
 
     @Test
@@ -77,12 +80,13 @@ public class AUserCreateABankAccountTest {
         Account connectedUserAccount = new Account(anotherUser);
         accountsInMemory.save(connectedUserAccount);
         AUserCreateABankAccount aUserCreateABankAccount = new AUserCreateABankAccount(new CreateAccount(accountsInMemory));
-        Account expectedAccount = new Account(connectedUser);
+        Optional<Account> expectedAccount = Optional.of(new Account(connectedUser));
         AccountCreationForm accountCreationForm = new AccountCreationForm(0);
 
         aUserCreateABankAccount.execute(connectedUser, accountCreationForm);
 
-        assertThat(accountsInMemory.forUser(connectedUser).get()).isEqualToComparingFieldByFieldRecursively(expectedAccount);
+        assertThat(accountsInMemory.forUser(connectedUser)).usingRecursiveComparison()
+                .isEqualTo(expectedAccount);
     }
 
     // TODO tests about user : no user/empty user/bad uuid/unknown uuid...
