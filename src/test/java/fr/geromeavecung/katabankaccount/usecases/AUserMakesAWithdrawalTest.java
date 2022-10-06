@@ -222,7 +222,37 @@ public class AUserMakesAWithdrawalTest {
             assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
                     .isEqualTo(expectedAccount);
         }
-        // TODO max withdrawal on account
+
+        @Test
+        void withdrawal_maximum_amount_per_account() {
+            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            Account initialAccount = new Account(user);
+            accountsInMemory.save(initialAccount);
+            List<Operation> expectedOperations = new ArrayList<>();
+            expectedOperations.add(new Withdrawal(new Amount(100), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))));
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(expectedOperations)));
+            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(100);
+
+            aUserMakesAWithdrawal.execute(user, withdrawalRequest);
+
+            assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
+                    .isEqualTo(expectedAccount);
+        }
+
+        // TODO more tests on balance computing : multiple deposits and withdrawl
+
+        @Test
+        void withdrawal_more_than_maximum_amount_per_account() {
+            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            Account initialAccount = new Account(user);
+            accountsInMemory.save(initialAccount);
+            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(101);
+
+            assertThatThrownBy(() -> aUserMakesAWithdrawal.execute(user, withdrawalRequest))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("balance of account can't be below -100, was: -101");
+        }
+
     }
 
     @Nested

@@ -39,4 +39,12 @@ public class OperationsHistory {
                 .mapToInt(withdrawal -> withdrawal.amount().value())
                 .sum();
     }
+
+    public int expectedBalance(Withdrawal expectedWithdrawal) {
+        return balance() - expectedWithdrawal.amount().value();
+    }
+
+    private int balance() {
+        return operations.stream().mapToInt(Operation::balance).sum();
+    }
 }

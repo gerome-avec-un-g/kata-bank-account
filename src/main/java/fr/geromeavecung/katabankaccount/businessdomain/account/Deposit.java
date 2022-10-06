@@ -9,4 +9,9 @@ public record Deposit(Amount amount, Timestamp timestamp) implements Operation {
             throw new IllegalArgumentException("Deposit amount can't be less or equal to 0, was: " + amount.value());
         }
     }
+
+    @Override
+    public int balance() {
+        return amount.value();
+    }
 }

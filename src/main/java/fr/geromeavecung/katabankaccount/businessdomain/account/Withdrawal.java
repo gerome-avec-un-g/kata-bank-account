@@ -19,4 +19,9 @@ public record Withdrawal(Amount amount, Timestamp timestamp) implements Operatio
     public boolean occursInTheSameYearMonth(YearMonth yearMonth) {
         return YearMonth.from(timestamp.value()).equals(yearMonth);
     }
+
+    @Override
+    public int balance() {
+        return -amount().value();
+    }
 }

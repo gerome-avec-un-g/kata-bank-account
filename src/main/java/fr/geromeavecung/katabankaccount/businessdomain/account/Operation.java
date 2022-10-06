@@ -4,4 +4,6 @@ public interface Operation {
     Amount amount();
 
     Timestamp timestamp();
+
+    int balance();
 }

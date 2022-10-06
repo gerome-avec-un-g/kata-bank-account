@@ -2,6 +2,7 @@ package fr.geromeavecung.katabankaccount.businessdomain.account;
 
 public class Account {
 
+    private static final int MINIMUM_BALANCE = -100;
     private final User owner;
     private final OperationsHistory operationsHistory;
 
@@ -12,6 +13,7 @@ public class Account {
         }
         return new Account(user, new OperationsHistory(new Deposit(amount, timestamp)));
     }
+
     public Account(User owner) {
         this.owner = owner;
         this.operationsHistory = new OperationsHistory();
@@ -31,6 +33,10 @@ public class Account {
     }
 
     public void withdraw(Amount amount, Timestamp timestamp) {
-        operationsHistory.add(new Withdrawal(amount, timestamp));
+        Withdrawal withdrawal = new Withdrawal(amount, timestamp);
+        if (operationsHistory.expectedBalance(withdrawal) < MINIMUM_BALANCE) {
+            throw new IllegalStateException("balance of account can't be below " + MINIMUM_BALANCE + ", was: -101");
+        }
+        operationsHistory.add(withdrawal);
     }
 }
