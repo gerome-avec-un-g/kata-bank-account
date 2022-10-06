@@ -61,29 +61,52 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
         @Test
         void account_with_1_withdrawal() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
+            List<Operation> operations = new ArrayList<>();
+            operations.add(new Withdrawal(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
+            Account initialAccount = new Account(user, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
 
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
 
-            assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
-                    .isEqualTo(expectedAccount);
+            List<OperationView> expectedOperations = new ArrayList<>();
+            expectedOperations.add(new OperationView("TODO operation label!", -1, -1, "2022-09-01T14:07:30"));
+            assertThat(actual.operations()).isEqualTo(expectedOperations);
         }
 
         @Test
         void account_with_multiple_operations() {
+                User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+                List<Operation> operations = new ArrayList<>();
+                operations.add(new Deposit(new Amount(10), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
+                operations.add(new Withdrawal(new Amount(5), new Timestamp(LocalDateTime.parse("2022-09-02T14:07:30"))));
+                operations.add(new Withdrawal(new Amount(15), new Timestamp(LocalDateTime.parse("2022-09-03T14:07:30"))));
+                operations.add(new Deposit(new Amount(20), new Timestamp(LocalDateTime.parse("2022-09-04T14:07:30"))));
+                operations.add(new Deposit(new Amount(25), new Timestamp(LocalDateTime.parse("2022-09-05T14:07:30"))));
+                operations.add(new Withdrawal(new Amount(30), new Timestamp(LocalDateTime.parse("2022-09-06T14:07:30"))));
+                Account initialAccount = new Account(user, new OperationsHistory(operations));
+                accountsInMemory.save(initialAccount);
+
+                AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+
+                List<OperationView> expectedOperations = new ArrayList<>();
+                expectedOperations.add(new OperationView("TODO operation label!", 10, 10, "2022-09-01T14:07:30"));
+                expectedOperations.add(new OperationView("TODO operation label!", -5, 5, "2022-09-02T14:07:30"));
+                expectedOperations.add(new OperationView("TODO operation label!", -15, -10, "2022-09-03T14:07:30"));
+                expectedOperations.add(new OperationView("TODO operation label!", 20, 10, "2022-09-04T14:07:30"));
+                expectedOperations.add(new OperationView("TODO operation label!", 25, 35, "2022-09-05T14:07:30"));
+                expectedOperations.add(new OperationView("TODO operation label!", -30, 5, "2022-09-06T14:07:30"));
+                assertThat(actual.operations()).isEqualTo(expectedOperations);
+        }
+
+        @Test
+        void account_without_operation() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
+            Account initialAccount = new Account(user);
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
 
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
 
-            assertThat(accountsInMemory.forUser(user)).usingRecursiveComparison()
-                    .isEqualTo(expectedAccount);
+            assertThat(actual.operations()).isEmpty();
         }
     }
 
