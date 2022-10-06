@@ -1,9 +1,11 @@
 package fr.geromeavecung.katabankaccount.businessdomain.account;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OperationsHistory {
+    private static final int MAXIMUM_PER_MONTH = 2000;
     private final List<Operation> operations;
 
     public OperationsHistory() {
@@ -21,6 +23,20 @@ public class OperationsHistory {
     }
 
     public void add(Operation operation) {
+        int totalMonthAmount = currentMonthWithdrawalAmountsSum(operation) + operation.amount().value();
+        if (totalMonthAmount > MAXIMUM_PER_MONTH) {
+            throw new IllegalArgumentException("Sum of withdrawal amount can't be more than 2000 per month, was: " + totalMonthAmount);
+        }
         operations.add(operation);
+    }
+
+    private int currentMonthWithdrawalAmountsSum(Operation operation) {
+        YearMonth yearMonthOfOperation = YearMonth.from(operation.timestamp().value());
+        return operations.stream()
+                .filter(Withdrawal.class::isInstance)
+                .map(Withdrawal.class::cast)
+                .filter(withdrawal -> withdrawal.occursInTheSameYearMonth(yearMonthOfOperation))
+                .mapToInt(withdrawal -> withdrawal.amount().value())
+                .sum();
     }
 }

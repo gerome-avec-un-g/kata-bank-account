@@ -5,6 +5,7 @@ import fr.geromeavecung.katabankaccount.businessdomain.account.Amount;
 import fr.geromeavecung.katabankaccount.businessdomain.account.Deposit;
 import fr.geromeavecung.katabankaccount.businessdomain.account.DepositMoney;
 import fr.geromeavecung.katabankaccount.businessdomain.account.OperationsHistory;
+import fr.geromeavecung.katabankaccount.businessdomain.account.Timestamp;
 import fr.geromeavecung.katabankaccount.businessdomain.account.User;
 import fr.geromeavecung.katabankaccount.businessdomain.account.Withdrawal;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,10 +27,14 @@ public class AUserMakesADepositTest {
 
     private AUserMakesADeposit aUserMakesADeposit;
 
+    private FixedTimestamps fixedTimestamps;
+
     @BeforeEach
     void setup() {
         accountsInMemory = new AccountsInMemory();
-        aUserMakesADeposit = new AUserMakesADeposit(new DepositMoney(accountsInMemory));
+        fixedTimestamps = new FixedTimestamps();
+        fixedTimestamps.setTimestamp("2022-10-06T14:07:30");
+        aUserMakesADeposit = new AUserMakesADeposit(new DepositMoney(accountsInMemory, fixedTimestamps));
     }
 
     @Nested
@@ -39,7 +45,7 @@ public class AUserMakesADepositTest {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             Account initialAccount = new Account(user);
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(new Deposit(new Amount(1)))));
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))))));
             DepositRequest depositRequest = new DepositRequest(1);
 
             aUserMakesADeposit.execute(user, depositRequest);
@@ -51,9 +57,9 @@ public class AUserMakesADepositTest {
         @Test
         void account_with_1_deposit() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(2))));
+            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))));
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(2)), new Deposit(new Amount(1))))));
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))), new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
             DepositRequest depositRequest = new DepositRequest(1);
 
             aUserMakesADeposit.execute(user, depositRequest);
@@ -65,9 +71,9 @@ public class AUserMakesADepositTest {
         @Test
         void account_with_1_withdrawal() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Withdrawal(new Amount(2))));
+            Account initialAccount = new Account(user, new OperationsHistory(new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))));
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Withdrawal(new Amount(2)), new Deposit(new Amount(1))))));
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))), new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
             DepositRequest depositRequest = new DepositRequest(1);
 
             aUserMakesADeposit.execute(user, depositRequest);
@@ -79,9 +85,9 @@ public class AUserMakesADepositTest {
         @Test
         void account_with_multiple_operations() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(3)), new Deposit(new Amount(2)))));
+            Account initialAccount = new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(3), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))), new Deposit(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))))));
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(3)), new Deposit(new Amount(2)), new Deposit(new Amount(1))))));
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(3), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))), new Deposit(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))), new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
             DepositRequest depositRequest = new DepositRequest(1);
 
             aUserMakesADeposit.execute(user, depositRequest);
@@ -100,7 +106,7 @@ public class AUserMakesADepositTest {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             Account initialAccount = new Account(user);
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(new Deposit(new Amount(1)))));
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))))));
             DepositRequest depositRequest = new DepositRequest(1);
 
             aUserMakesADeposit.execute(user, depositRequest);
@@ -145,7 +151,7 @@ public class AUserMakesADepositTest {
             accountsInMemory.save(initialAccount);
             Account anotherInitialAccount = new Account(anotherUser);
             accountsInMemory.save(anotherInitialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(new Deposit(new Amount(1)))));
+            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30"))))));
             Optional<Account> anotherExpectedAccount = Optional.of(new Account(anotherUser, new OperationsHistory()));
             DepositRequest depositRequest = new DepositRequest(1);
 
@@ -156,6 +162,8 @@ public class AUserMakesADepositTest {
             assertThat(accountsInMemory.forUser(anotherUser)).usingRecursiveComparison()
                     .isEqualTo(anotherExpectedAccount);
         }
+
+        // TODO tests on timestamps
 
         @Test
         void user_without_account() {

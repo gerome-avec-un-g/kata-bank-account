@@ -7,9 +7,9 @@ public class WithdrawMoney {
         this.accounts = accounts;
     }
 
-    public void execute(User user, Amount amount) {
+    public void execute(User user, Amount amount, Timestamp timestamp) {
         Account account = accounts.forUser(user).orElseThrow(() -> new IllegalStateException("user " + user.uuid() + " has no account"));
-        account.withdraw(amount);
+        account.withdraw(amount, timestamp);
     }
 
 }
