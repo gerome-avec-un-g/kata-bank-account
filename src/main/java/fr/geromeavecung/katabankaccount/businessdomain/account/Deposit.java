@@ -11,7 +11,7 @@ public record Deposit(Amount amount, Timestamp timestamp) implements Operation {
     }
 
     @Override
-    public int balance() {
+    public int signedAmount() {
         return amount.value();
     }
 }

@@ -2,6 +2,7 @@ package fr.geromeavecung.katabankaccount.businessdomain.account;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OperationsHistory {
@@ -45,6 +46,11 @@ public class OperationsHistory {
     }
 
     private int balance() {
-        return operations.stream().mapToInt(Operation::balance).sum();
+        return operations.stream().mapToInt(Operation::signedAmount).sum();
+    }
+
+    public List<Operation> getOperations() {
+        // return a new instance to prevent data manipulation
+        return Collections.unmodifiableList(operations);
     }
 }

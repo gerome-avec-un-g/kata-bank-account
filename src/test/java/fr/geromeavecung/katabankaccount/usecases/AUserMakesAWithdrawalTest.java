@@ -179,7 +179,7 @@ public class AUserMakesAWithdrawalTest {
                     .isEqualTo(expectedAccount);
         }
 
-        // TODO take into account yearmonth not just year
+        // TODO take into account year month not just year
 
         @Test
         void withdrawal_more_than_maximum_per_month() {
@@ -239,7 +239,7 @@ public class AUserMakesAWithdrawalTest {
                     .isEqualTo(expectedAccount);
         }
 
-        // TODO more tests on balance computing : multiple deposits and withdrawl
+        // TODO more tests on balance computing : multiple deposits and withdrawal
 
         @Test
         void withdrawal_more_than_maximum_amount_per_account() {

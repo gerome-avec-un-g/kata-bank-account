@@ -1,5 +1,7 @@
 package fr.geromeavecung.katabankaccount.businessdomain.account;
 
+import java.util.List;
+
 public class Account {
 
     private static final int MINIMUM_BALANCE = -100;
@@ -38,5 +40,9 @@ public class Account {
             throw new IllegalStateException("balance of account can't be below " + MINIMUM_BALANCE + ", was: -101");
         }
         operationsHistory.add(withdrawal);
+    }
+
+    public List<Operation> getOperations() {
+        return operationsHistory.getOperations();
     }
 }

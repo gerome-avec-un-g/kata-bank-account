@@ -21,7 +21,7 @@ public record Withdrawal(Amount amount, Timestamp timestamp) implements Operatio
     }
 
     @Override
-    public int balance() {
+    public int signedAmount() {
         return -amount().value();
     }
 }
