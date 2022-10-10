@@ -6,10 +6,10 @@ import fr.geromeavecung.katabankaccount.businessdomain.account.Operation;
 import java.util.ArrayList;
 import java.util.List;
 
-public record AccountView(List<OperationView> operations) {
+public record AccountView(List<OperationView> operations, int balance) {
 
     public AccountView(Account account) {
-        this(convertOperationViews(account));
+        this(convertOperationViews(account), account.balance());
     }
 
     private static List<OperationView> convertOperationViews(Account account) {

@@ -116,40 +116,38 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
         @Test
         void positive_balance() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
+            List<Operation> operations = new ArrayList<>();
+            operations.add(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
+            Account initialAccount = new Account(user, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
 
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
 
-            fail();
+            assertThat(actual.balance()).isEqualTo(1);
         }
 
         @Test
         void negative_balance() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
+            List<Operation> operations = new ArrayList<>();
+            operations.add(new Withdrawal(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
+            Account initialAccount = new Account(user, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
 
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
 
-            fail();
+            assertThat(actual.balance()).isEqualTo(-1);
         }
 
         @Test
         void balance_is_0() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
+            Account initialAccount = new Account(user);
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
 
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
 
-            fail();
+            assertThat(actual.balance()).isEqualTo(0);
         }
     }
 

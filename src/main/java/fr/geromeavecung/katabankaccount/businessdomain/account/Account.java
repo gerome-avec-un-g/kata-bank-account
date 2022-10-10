@@ -45,4 +45,8 @@ public class Account {
     public List<Operation> getOperations() {
         return operationsHistory.getOperations();
     }
+
+    public int balance() {
+        return operationsHistory.balance();
+    }
 }
