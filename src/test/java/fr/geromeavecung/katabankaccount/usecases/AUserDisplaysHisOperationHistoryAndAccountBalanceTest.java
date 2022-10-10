@@ -16,29 +16,22 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.fail;
 
 class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
 
     private AccountsInMemory accountsInMemory;
-
-    private FixedTimestamps fixedTimestamps;
 
     private AUserDisplaysHisOperationHistoryAndAccountBalance aUserDisplaysHisOperationHistoryAndAccountBalance;
 
     @BeforeEach
     void setup() {
         accountsInMemory = new AccountsInMemory();
-        fixedTimestamps = new FixedTimestamps();
-        fixedTimestamps.setTimestamp("2022-10-06T14:07:30");
-        aUserDisplaysHisOperationHistoryAndAccountBalance = new AUserDisplaysHisOperationHistoryAndAccountBalance(new ReadAccount(accountsInMemory), fixedTimestamps);
+        aUserDisplaysHisOperationHistoryAndAccountBalance = new AUserDisplaysHisOperationHistoryAndAccountBalance(new ReadAccount(accountsInMemory));
     }
 
     @Nested
@@ -149,36 +142,6 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
             AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
 
             assertThat(actual.balance()).isZero();
-        }
-    }
-
-    @Nested
-    @DisplayName("Given a connected user with a bank account when he displays the account information then the timestamp of the request is displayed")
-    class timestamp {
-        @Test
-        void timestamp_1() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
-            accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
-
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
-
-            fail();
-        }
-
-        @Test
-        void timestamp_2() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
-            accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
-
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
-
-            fail();
         }
     }
 
