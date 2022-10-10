@@ -8,6 +8,6 @@ public class ReadAccount {
     }
 
     public Account forUser(User user) {
-        return accounts.forUser(user).get(); // FIXME user without account
+        return accounts.forUser(user).orElseThrow(() -> new IllegalStateException("user " + user.uuid() + " has no account"));
     }
 }

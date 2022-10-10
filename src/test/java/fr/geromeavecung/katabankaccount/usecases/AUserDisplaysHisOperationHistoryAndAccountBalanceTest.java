@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
@@ -147,7 +148,7 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
 
             AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
 
-            assertThat(actual.balance()).isEqualTo(0);
+            assertThat(actual.balance()).isZero();
         }
     }
 
@@ -186,28 +187,27 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
     class accounts {
         @Test
         void multiple_accounts_for_different_users() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
+            User connectedUser = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            User anotherUser = new User(UUID.fromString("edd8d5ee-9af9-491f-bcd9-4fc3a8c4f7d9"));
+            List<Operation> operations = new ArrayList<>();
+            operations.add(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
+            Account initialAccount = new Account(connectedUser, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
+            Account anotherAccount = new Account(anotherUser);
+            accountsInMemory.save(anotherAccount);
 
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(connectedUser);
 
-            fail();
+            assertThat(actual.balance()).isEqualTo(1);
         }
 
         @Test
         void user_without_accounts() {
             User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            Account initialAccount = new Account(user, new OperationsHistory(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30")))));
-            accountsInMemory.save(initialAccount);
-            Optional<Account> expectedAccount = Optional.of(new Account(user, new OperationsHistory(Arrays.asList(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))), new Withdrawal(new Amount(2), new Timestamp(LocalDateTime.parse("2022-10-06T14:07:30")))))));
-            WithdrawalRequest withdrawalRequest = new WithdrawalRequest(2);
 
-            aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
-
-            fail();
+            assertThatThrownBy(() -> aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("user 29516229-e614-4f28-bdfb-ba77cd93e837 has no account");
         }
     }
 
