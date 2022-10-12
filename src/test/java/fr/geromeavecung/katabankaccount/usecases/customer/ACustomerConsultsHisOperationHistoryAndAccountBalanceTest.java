@@ -1,4 +1,4 @@
-package fr.geromeavecung.katabankaccount.usecases;
+package fr.geromeavecung.katabankaccount.usecases.customer;
 
 import fr.geromeavecung.katabankaccount.businessdomain.account.Account;
 import fr.geromeavecung.katabankaccount.businessdomain.account.Amount;
@@ -6,9 +6,13 @@ import fr.geromeavecung.katabankaccount.businessdomain.account.Deposit;
 import fr.geromeavecung.katabankaccount.businessdomain.account.Operation;
 import fr.geromeavecung.katabankaccount.businessdomain.account.OperationsHistory;
 import fr.geromeavecung.katabankaccount.businessdomain.account.ReadAccount;
-import fr.geromeavecung.katabankaccount.businessdomain.account.Timestamp;
-import fr.geromeavecung.katabankaccount.businessdomain.account.User;
+import fr.geromeavecung.katabankaccount.businessdomain.core.Timestamp;
+import fr.geromeavecung.katabankaccount.businessdomain.core.ConnectedUser;
 import fr.geromeavecung.katabankaccount.businessdomain.account.Withdrawal;
+import fr.geromeavecung.katabankaccount.usecases.AccountsInMemory;
+import fr.geromeavecung.katabankaccount.usecases.customer.consultsoperationhistoryandaccountbalance.ACustomerConsultsHisOperationHistoryAndAccountBalance;
+import fr.geromeavecung.katabankaccount.usecases.customer.consultsoperationhistoryandaccountbalance.AccountView;
+import fr.geromeavecung.katabankaccount.usecases.customer.consultsoperationhistoryandaccountbalance.OperationView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,16 +26,16 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
+class ACustomerConsultsHisOperationHistoryAndAccountBalanceTest {
 
     private AccountsInMemory accountsInMemory;
 
-    private AUserDisplaysHisOperationHistoryAndAccountBalance aUserDisplaysHisOperationHistoryAndAccountBalance;
+    private ACustomerConsultsHisOperationHistoryAndAccountBalance aCustomerConsultsHisOperationHistoryAndAccountBalance;
 
     @BeforeEach
     void setup() {
         accountsInMemory = new AccountsInMemory();
-        aUserDisplaysHisOperationHistoryAndAccountBalance = new AUserDisplaysHisOperationHistoryAndAccountBalance(new ReadAccount(accountsInMemory));
+        aCustomerConsultsHisOperationHistoryAndAccountBalance = new ACustomerConsultsHisOperationHistoryAndAccountBalance(new ReadAccount(accountsInMemory));
     }
 
     @Nested
@@ -39,13 +43,13 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
     class operations {
         @Test
         void account_with_1_deposit() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             List<Operation> operations = new ArrayList<>();
             operations.add(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
             Account initialAccount = new Account(user, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
 
-            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user);
 
             List<OperationView> expectedOperations = new ArrayList<>();
             expectedOperations.add(new OperationView("TODO operation label!", 1, 1, "2022-09-01T14:07:30"));
@@ -54,13 +58,13 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
 
         @Test
         void account_with_1_withdrawal() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             List<Operation> operations = new ArrayList<>();
             operations.add(new Withdrawal(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
             Account initialAccount = new Account(user, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
 
-            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user);
 
             List<OperationView> expectedOperations = new ArrayList<>();
             expectedOperations.add(new OperationView("TODO operation label!", -1, -1, "2022-09-01T14:07:30"));
@@ -69,7 +73,7 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
 
         @Test
         void account_with_multiple_operations() {
-                User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+                ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
                 List<Operation> operations = new ArrayList<>();
                 operations.add(new Deposit(new Amount(10), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
                 operations.add(new Withdrawal(new Amount(5), new Timestamp(LocalDateTime.parse("2022-09-02T14:07:30"))));
@@ -80,7 +84,7 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
                 Account initialAccount = new Account(user, new OperationsHistory(operations));
                 accountsInMemory.save(initialAccount);
 
-                AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+                AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user);
 
                 List<OperationView> expectedOperations = new ArrayList<>();
                 expectedOperations.add(new OperationView("TODO operation label!", 10, 10, "2022-09-01T14:07:30"));
@@ -94,11 +98,11 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
 
         @Test
         void account_without_operation() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             Account initialAccount = new Account(user);
             accountsInMemory.save(initialAccount);
 
-            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user);
 
             assertThat(actual.operations()).isEmpty();
         }
@@ -109,37 +113,37 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
     class balance {
         @Test
         void positive_balance() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             List<Operation> operations = new ArrayList<>();
             operations.add(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
             Account initialAccount = new Account(user, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
 
-            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user);
 
             assertThat(actual.balance()).isEqualTo(1);
         }
 
         @Test
         void negative_balance() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             List<Operation> operations = new ArrayList<>();
             operations.add(new Withdrawal(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
             Account initialAccount = new Account(user, new OperationsHistory(operations));
             accountsInMemory.save(initialAccount);
 
-            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user);
 
             assertThat(actual.balance()).isEqualTo(-1);
         }
 
         @Test
         void balance_is_0() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
             Account initialAccount = new Account(user);
             accountsInMemory.save(initialAccount);
 
-            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user);
+            AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user);
 
             assertThat(actual.balance()).isZero();
         }
@@ -150,8 +154,8 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
     class accounts {
         @Test
         void multiple_accounts_for_different_users() {
-            User connectedUser = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
-            User anotherUser = new User(UUID.fromString("edd8d5ee-9af9-491f-bcd9-4fc3a8c4f7d9"));
+            ConnectedUser connectedUser = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser anotherUser = new ConnectedUser(UUID.fromString("edd8d5ee-9af9-491f-bcd9-4fc3a8c4f7d9"));
             List<Operation> operations = new ArrayList<>();
             operations.add(new Deposit(new Amount(1), new Timestamp(LocalDateTime.parse("2022-09-01T14:07:30"))));
             Account initialAccount = new Account(connectedUser, new OperationsHistory(operations));
@@ -159,16 +163,16 @@ class AUserDisplaysHisOperationHistoryAndAccountBalanceTest {
             Account anotherAccount = new Account(anotherUser);
             accountsInMemory.save(anotherAccount);
 
-            AccountView actual = aUserDisplaysHisOperationHistoryAndAccountBalance.execute(connectedUser);
+            AccountView actual = aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(connectedUser);
 
             assertThat(actual.balance()).isEqualTo(1);
         }
 
         @Test
         void user_without_accounts() {
-            User user = new User(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
+            ConnectedUser user = new ConnectedUser(UUID.fromString("29516229-e614-4f28-bdfb-ba77cd93e837"));
 
-            assertThatThrownBy(() -> aUserDisplaysHisOperationHistoryAndAccountBalance.execute(user))
+            assertThatThrownBy(() -> aCustomerConsultsHisOperationHistoryAndAccountBalance.execute(user))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessage("user 29516229-e614-4f28-bdfb-ba77cd93e837 has no account");
         }

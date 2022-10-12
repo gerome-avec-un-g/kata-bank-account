@@ -1,5 +1,8 @@
 package fr.geromeavecung.katabankaccount.businessdomain.account;
 
+import fr.geromeavecung.katabankaccount.businessdomain.core.Timestamps;
+import fr.geromeavecung.katabankaccount.businessdomain.core.ConnectedUser;
+
 public class CreateAccount {
 
     private final Accounts accounts;
@@ -11,7 +14,7 @@ public class CreateAccount {
         this.timestamps = timestamps;
     }
 
-    public void execute(User user, Amount amount) {
+    public void execute(ConnectedUser user, Amount amount) {
         if (accounts.forUser(user).isPresent()) {
             throw new IllegalStateException("a user can't have two accounts");
         }

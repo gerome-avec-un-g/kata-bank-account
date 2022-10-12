@@ -1,4 +1,4 @@
-package fr.geromeavecung.katabankaccount.businessdomain.account;
+package fr.geromeavecung.katabankaccount.businessdomain.core;
 
 import java.time.LocalDateTime;
 

@@ -1,5 +1,7 @@
 package fr.geromeavecung.katabankaccount.businessdomain.account;
 
+import fr.geromeavecung.katabankaccount.businessdomain.core.ConnectedUser;
+
 public class ReadAccount {
     private final Accounts accounts;
 
@@ -7,7 +9,7 @@ public class ReadAccount {
         this.accounts = accounts;
     }
 
-    public Account forUser(User user) {
+    public Account forUser(ConnectedUser user) {
         return accounts.forUser(user).orElseThrow(() -> new IllegalStateException("user " + user.uuid() + " has no account"));
     }
 }

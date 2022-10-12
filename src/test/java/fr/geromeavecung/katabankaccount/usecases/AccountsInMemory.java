@@ -2,7 +2,7 @@ package fr.geromeavecung.katabankaccount.usecases;
 
 import fr.geromeavecung.katabankaccount.businessdomain.account.Account;
 import fr.geromeavecung.katabankaccount.businessdomain.account.Accounts;
-import fr.geromeavecung.katabankaccount.businessdomain.account.User;
+import fr.geromeavecung.katabankaccount.businessdomain.core.ConnectedUser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class AccountsInMemory implements Accounts {
 
-    private final Map<User, Account> accountsByUser = new HashMap<>();
+    private final Map<ConnectedUser, Account> accountsByUser = new HashMap<>();
 
     @Override
     public void save(Account account) {
@@ -18,7 +18,7 @@ public class AccountsInMemory implements Accounts {
     }
 
     @Override
-    public Optional<Account> forUser(User user) {
+    public Optional<Account> forUser(ConnectedUser user) {
         return Optional.ofNullable(accountsByUser.get(user));
     }
 }

@@ -1,4 +1,4 @@
-package fr.geromeavecung.katabankaccount.usecases;
+package fr.geromeavecung.katabankaccount.usecases.customer.consultsoperationhistoryandaccountbalance;
 
 import fr.geromeavecung.katabankaccount.businessdomain.account.Operation;
 

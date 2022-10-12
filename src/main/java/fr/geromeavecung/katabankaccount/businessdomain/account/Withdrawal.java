@@ -1,5 +1,7 @@
 package fr.geromeavecung.katabankaccount.businessdomain.account;
 
+import fr.geromeavecung.katabankaccount.businessdomain.core.Timestamp;
+
 import java.time.YearMonth;
 
 public record Withdrawal(Amount amount, Timestamp timestamp) implements Operation {

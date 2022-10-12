@@ -1,4 +1,4 @@
-package fr.geromeavecung.katabankaccount.usecases;
+package fr.geromeavecung.katabankaccount.usecases.customer.createsaccount;
 
 import fr.geromeavecung.katabankaccount.businessdomain.account.Amount;
 

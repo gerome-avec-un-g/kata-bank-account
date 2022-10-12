@@ -1,7 +1,7 @@
 package fr.geromeavecung.katabankaccount.usecases;
 
-import fr.geromeavecung.katabankaccount.businessdomain.account.Timestamp;
-import fr.geromeavecung.katabankaccount.businessdomain.account.Timestamps;
+import fr.geromeavecung.katabankaccount.businessdomain.core.Timestamp;
+import fr.geromeavecung.katabankaccount.businessdomain.core.Timestamps;
 
 import java.time.LocalDateTime;
 
